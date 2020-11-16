@@ -18,3 +18,12 @@ body {
    */
   background-image: url('./images/bg-pattern.png');
 }
+
+.js-films-wrapper-list{
+  display: flex;
+  flex-wrap: wrap;
+  white-space: normal;
+  &__item{
+    width: 210px;
+  }
+}
