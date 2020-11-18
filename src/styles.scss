@@ -19,11 +19,62 @@ body {
   background-image: url('./images/bg-pattern.png');
 }
 
+ul{
+  list-style: none;
+}
+
 .js-films-wrapper-list{
   display: flex;
   flex-wrap: wrap;
   white-space: normal;
   &__item{
-    width: 210px;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #000000;
+    margin: 5px;
+    border-radius: 5px;
+    padding: 5px;
+    img{
+      align-self: center;
+    }
   }
+}
+
+.wrapper-for-pagination{
+  .js-pages{
+    display: flex;
+    justify-content: center;
+    li{
+      width: 40px;
+      height: 40px;
+      margin-left: 2px;
+      a{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 5px;
+        background-color: #cccccc;
+      }
+    }
+  }
+}
+
+.modal{
+  position: fixed;
+  margin: 0 auto;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 100px;
+  width: 882px;
+  height: 514px;
+  background-color: #cccccc;
+
+  display: flex;
+}
+
+.hide{
+  display: none;
 }
