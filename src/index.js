@@ -12,47 +12,54 @@ import './styles.scss';
 const refs = {
     mainWrapper: document.querySelector('.js-films-wrapper-list'),
     pagination: document.querySelector('.js-pages'),
-    modal: document.querySelector('.modal')
+    modal: document.querySelector('.modal'),
+    addedToWatched: document.querySelector('.added-to-watched'),
+    addedToQueue: document.querySelector('.added-to-queue')
 }
 
 fetchMovie(createUrlForTrending())
     .then(data => {
-        //console.log(data)
-        console.log(data.results)
-//        localStorage.setItem('data', JSON.stringify(data.results))
-
-        //const films = data.results.slice(0, 9)
         const films = data.results
 
-        films.map(d => {
-            const html = `
-                <li class="js-films-wrapper-list__item" data-id="${d.id}">
-                    <img width="200px" src="https://image.tmdb.org/t/p/w500/${d.poster_path}"/>
-                    <p>${d.title || d.name}</p>
-                </li>
-            `
-            refs.mainWrapper.insertAdjacentHTML("beforeend", html)
-        })
-
-        let refsList = document.querySelectorAll('[data-id]')
+        films.map(movieData => refs.mainWrapper.insertAdjacentHTML("beforeend", renderMoviesListItem(movieData)))
 
         refs.mainWrapper.addEventListener('click', event => {
-            console.log(event.path[1])
             refs.modal.classList.remove('hide')
-            renderFullInfo(+event.path[1].dataset.id) // отдаю id в след запрос
+            const id = event.path[1].dataset.id
+            if(id){
+                renderFullInfo(+id)
+            }
         })
     }
 )
 
+refs.addedToWatched.addEventListener('click', event => {
+    refs.modal.classList.add('hide')
+    const movieIds = localStorage.getItem('toWatched')
+    renderWatchedOrQueue(movieIds)
+})
 
+refs.addedToQueue.addEventListener('click', event => {
+    refs.modal.classList.add('hide')
+    const movieIds = localStorage.getItem('toQueue')
+    renderWatchedOrQueue(movieIds)
+})
 
+function renderWatchedOrQueue(movieIds){
+    refs.mainWrapper.innerHTML = ''
+    movieIds.split(' ').map( id => {
+        fetchMovie(createUrlForFullInfo(id))
+        .then(movieData => {
+            refs.mainWrapper.insertAdjacentHTML("beforeend", renderMoviesListItem(movieData))
+        })
+    })
+}
 
-// fetchMovie(createUrlSearchByKeyword('dog'))
-//     .then(data=>{
-//         console.log(data.results)
-//     }
-// )
-
-
-// let html = ``
-// refs.pagination.insertAdjacentHTML("beforeend", html)
+function renderMoviesListItem(data){
+    return `
+        <li class="js-films-wrapper-list__item" data-id="${data.id}">
+            <img width="200px" src="https://image.tmdb.org/t/p/w500/${data.poster_path}"/>
+            <p>${data.title || data.name}</p>
+        </li>
+    `
+}
